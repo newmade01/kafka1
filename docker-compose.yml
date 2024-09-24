@@ -1,0 +1,91 @@
+version: '3'
+services:
+  zookeeper1:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: peter-zk001
+    container_name: zookeeper1
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "peter-zk001:2888:3888,peter-zk002:2888:3888,peter-zk003:2888:3888"
+    ports:
+      - "2181:2181"
+    volumes:
+      - ./zookeeper/zoo1.cfg:/etc/kafka/zookeeper.properties
+
+  zookeeper2:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: peter-zk002
+    container_name: zookeeper2
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "peter-zk001:2888:3888,peter-zk002:2888:3888,peter-zk003:2888:3888"
+    ports:
+      - "2182:2181"
+    volumes:
+      - ./zookeeper/zoo2.cfg:/etc/kafka/zookeeper.properties
+
+  zookeeper3:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: peter-zk003
+    container_name: zookeeper3
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: "peter-zk001:2888:3888,peter-zk002:2888:3888,peter-zk003:2888:3888"
+    ports:
+      - "2183:2181"
+    volumes:
+      - ./zookeeper/zoo3.cfg:/etc/kafka/zookeeper.properties
+
+  kafka1:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka1
+    container_name: kafka1
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "peter-zk001:2181,peter-zk002:2181,peter-zk003:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    volumes:
+      - ./kafka/kafka1.cfg:/etc/kafka/kafka.properties
+
+  kafka2:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka2
+    container_name: kafka2
+    ports:
+      - "9093:9092"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: "peter-zk001:2181,peter-zk002:2181,peter-zk003:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    volumes:
+      - ./kafka/kafka2.cfg:/etc/kafka/kafka.properties
+
+  kafka3:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka3
+    container_name: kafka3
+    ports:
+      - "9094:9092"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: "peter-zk001:2181,peter-zk002:2181,peter-zk003:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    volumes:
+      - ./kafka/kafka3.cfg:/etc/kafka/kafka.properties
